@@ -15,6 +15,8 @@ var Event = React.createClass({
       url: '/api/events/' + this.props.event.id,
       success: function(data) {
         this.props.handleDeleteRecord(this.props.event);
+
+
       }.bind(this),
       error: function(xhr, status, error) {
         alert('Cannot delete requested record: ', error);
@@ -41,6 +43,7 @@ var Event = React.createClass({
         method: 'PUT',
         url: '/api/events/' + this.props.event.id,
         data: { event: event_data },
+
         success: function(data) {
           this.props.handleUpdateRecord(this.props.event, data);
           this.setState({ edit: false });
@@ -49,6 +52,7 @@ var Event = React.createClass({
           alert('Cannot update requested record: ', error);
         }
       });
+
     } else {
       alert('Please fill all fields.');
     }
@@ -64,6 +68,7 @@ var Event = React.createClass({
     }
   },
   renderForm: function() {
+
     return(
       <tr>
         <td>
@@ -113,6 +118,7 @@ var Event = React.createClass({
   },
   renderRecord: function() {
     var event = this.props.event;
+
     return(
       <tr>
         <td>{event.name}</td>

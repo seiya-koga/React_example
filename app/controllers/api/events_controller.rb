@@ -1,9 +1,13 @@
 module Api
   class EventsController < ApplicationController
     before_action :set_event, only: [:update, :destroy]
-
     def index
-      render json: Event.order(sort_by + ' ' + order)
+
+      @allEvents = Event.order(sort_by + ' ' + order).page(params[:page])
+
+
+      render json: [@allEvents, @allEvents.total_count]
+
     end
 
     def create
@@ -25,9 +29,11 @@ module Api
 
     def search
       query = params[:query]
-      events = Event.where('name LIKE ? OR place LIKE ? OR description LIKE ?',
-                           "%#{query}%", "%#{query}%", "%#{query}%")
-      render json: events
+      @allEvents = Event.where('name LIKE ? OR place LIKE ? OR description LIKE ?',
+                           "%#{query}%", "%#{query}%", "%#{query}%").page(params[:page])
+
+
+      render json: [@allEvents,@allEvents.total_count]
     end
 
     def destroy
@@ -46,6 +52,7 @@ module Api
     end
 
     def sort_by
+
       %w(name
          place
          description

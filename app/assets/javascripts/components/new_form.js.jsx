@@ -6,6 +6,7 @@ var NewForm = React.createClass({
     description: React.PropTypes.string
   },
   getInitialState: function() {
+
     return {
       name: '',
       place: '',

@@ -9,12 +9,14 @@ var EventTable = React.createClass({
     this.props.handleSortColumn(name, order);
   },
   render: function() {
+
     var events = [];
     this.props.events.forEach(function(event) {
       events.push(<Event event={event}
                          key={'event' + event.id}
                          handleDeleteRecord={this.handleDeleteRecord}
                          handleUpdateRecord={this.handleUpdateRecord} />)
+
     }.bind(this));
     return(
       <table className="table table-striped">

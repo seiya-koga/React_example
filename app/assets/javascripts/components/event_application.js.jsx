@@ -1,27 +1,48 @@
 var EventApplication = React.createClass({
   getInitialState: function() {
+
     return { events: [],
+    data: [],
+    Data: [],
+    allEvents: 0,
              sort: "name",
-             order: "asc" };
+             order: "asc",
+             pageNum: 1,
+             currentPage: 1,
+             query: ""};
+
   },
+
   componentDidMount: function() {
+  console.log("didmount")
+
     this.getDataFromApi();
+
+
   },
+
   getDataFromApi: function() {
     var self = this;
     $.ajax({
-      url: '/api/events',
+      url: '/api/events/',
       success: function(data) {
-        self.setState({ events: data });
+        self.setState({ events: data[0], allEvents: data[1]});
       },
       error: function(xhr, status, error) {
         alert('Cannot get data from API: ', error);
       }
     });
   },
-  handleSearch: function(events) {
-    this.setState({ events: events });
+
+  handleSearch: function(data,query) {
+    this.setState({ events: data[0], allEvents: data[1],query: query});//setStateが呼ばれたらDOMが更新される
   },
+  handlePaging: function(data,pageNum) {
+          console.log("eventsPageは"+pageNum)
+    this.setState({events: data[0], allEvents: data[1],currentPage: pageNum});
+  },
+
+
   handleAdd: function(event) {
     var events = this.state.events;
     events.push(event);
@@ -40,6 +61,7 @@ var EventApplication = React.createClass({
     this.setState({ events: events });
   },
   handleSortColumn: function(name, order) {
+  console.log("sortは"+name)
     if (this.state.sort != name) {
       order = 'asc';
     }
@@ -48,23 +70,39 @@ var EventApplication = React.createClass({
       data: { sort_by: name, order: order },
       method: 'GET',
       success: function(data) {
-        this.setState({ events: data, sort: name, order: order });
+      console.log("sortの"+ data)
+        this.setState({ events: data[0], sort: name, order: order });
       }.bind(this),
       error: function(xhr, status, error) {
         alert('Cannot sort events: ', error);
       }
     });
   },
+
+
   render: function() {
+  console.log("eventsのデータは"+this.state.events)
+
     return(
       <div className="container">
         <div className="jumbotron">
-          <h1>ReactJS Tutorial</h1>
-          <p>by Piotr Jaworski</p>
+          <h1>ReactJS Sample</h1>
+           <Pagination handlePaging={this.handlePaging}
+           data={this.state.allEvents}
+           pageNum={this.state.currentPage}
+           currentPage={this.state.currentPage}
+           query={this.state.query}
+             />
+
+<p>stateのpageは{this.state.currentPage}</p>
+
+
+
         </div>
         <div className="row">
           <div className="col-md-4">
-            <SearchForm handleSearch={this.handleSearch} />
+            <SearchForm handleSearch={this.handleSearch}
+            currentPage={this.state.currentPage} />
           </div>
           <div className="col-md-8">
             <NewForm handleAdd={this.handleAdd} />
@@ -81,6 +119,7 @@ var EventApplication = React.createClass({
           </div>
         </div>
       </div>
+
     )
   }
 });

@@ -1,10 +1,13 @@
 var SortColumn = React.createClass({
   handleSort: function(e) {
+
     e.preventDefault();
     var order = this.props.order == 'desc' ? 'asc' : 'desc';
+
     this.props.handleSortColumn(this.props.name, order);
+
   },
-  render: function() {
+  render: function() {//3回呼ばれている
     var active = this.props.sort == this.props.name;
     var display_name = active ? <u>{this.props.text}</u> : this.props.text;
     var direction;
